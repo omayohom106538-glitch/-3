@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scenery Clock - Fixed</title>
+<link rel="manifest" href="manifest.json">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:#0f0f0f;
+    font-family:Arial;
+}
+
+/* main clock */
+.clock{
+    width:320px;
+    height:320px;
+    border-radius:50%;
+    background:#1b1b1b;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 0 50px rgba(0,0,0,.9);
+}
+
+/* scenery */
+.scenery{
+    height:45%;
+    position:relative;
+    transition:1s;
+}
+.day{background:linear-gradient(#ff9a3c,#ffd56b)}
+.night{background:linear-gradient(#020024,#090979,#000)}
+
+.sun,.moon{
+    position:absolute;
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    animation:float 4s ease-in-out infinite alternate;
+}
+.sun{background:#ffd700}
+.moon{background:#eee;display:none}
+
+@keyframes float{
+    from{transform:translate(-50%,0)}
+    to{transform:translate(-50%,15px)}
+}
+
+.mountain{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:100%;
+    background:#444;
+    clip-path:polygon(0 100%,20% 45%,40% 75%,60% 30%,80% 60%,100% 100%);
+}
+
+/* weather */
+.snow,.rain{
+    position:absolute;
+    top:-10px;
+    animation:fall linear infinite;
+    opacity:.9;
+}
+.snow{
+    width:4px;
+    height:4px;
+    background:white;
+    border-radius:50%;
+}
+.rain{
+    width:2px;
+    height:10px;
+    background:#6ec6ff;
+}
+
+@keyframes fall{
+    to{transform:translateY(220px);opacity:0}
+}
+
+/* center info */
+.center{
+    height:55%;
+    background:#121212;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+.time{font-size:34px}
+.date{font-size:13px;opacity:.7}
+
+/* analog clock */
+.analog{
+    position:absolute;
+    width:120px;
+    height:120px;
+    border:2px solid #555;
+    border-radius:50%;
+    bottom:18px;
+}
+.hand{
+    position:absolute;
+    height:2px;
+    background:white;
+    top:50%;
+    left:50%;
+    transform-origin:0% 50%;
+}
+.hour{width:35%;height:4px}
+.minute{width:45%}
+.second{width:50%;background:red}
+
+.dot{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:white;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+/* controls */
+.controls{
+    position:absolute;
+    bottom:8px;
+    right:8px;
+}
+button{
+    background:#333;
+    color:white;
+    border:none;
+    padding:5px 8px;
+    margin:2px;
+    border-radius:5px;
+    cursor:pointer;
+}
+button:hover{background:#555}
+
+/* responsive */
+@media(max-width:480px){
+    .clock{width:260px;height:260px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="clock">
+    <div class="scenery day" id="scene">
+        <div class="sun" id="sun"></div>
+        <div class="moon" id="moon"></div>
+        <div class="mountain"></div>
+    </div>
+
+    <div class="center">
+        <div class="time" id="time"></div>
+        <div class="date" id="date"></div>
+    </div>
+
+    <div class="analog">
+        <div class="hand hour" id="hour"></div>
+        <div class="hand minute" id="minute"></div>
+        <div class="hand second" id="second"></div>
+        <div class="dot"></div>
+    </div>
+
+    <div class="controls">
+        <button onclick="toggleSound()">🔊</button>
+        <button onclick="toggleWeather()">🌦</button>
+    </div>
+</div>
+
+<audio id="tick" src="https://www.soundjay.com/clock/sounds/clock-ticking-2.mp3"></audio>
+
+<script>
+let sound=false;
+let weather=true;
+
+function updateClock(){
+    const now=new Date();
+    let h=now.getHours();
+    let m=now.getMinutes();
+    let s=now.getSeconds();
+
+    if(m<10)m="0"+m;
+
+    time.innerText=h+":"+m;
+    date.innerText=now.toDateString();
+
+    hour.style.transform=`rotate(${h*30+m/2}deg)`;
+    minute.style.transform=`rotate(${m*6}deg)`;
+    second.style.transform=`rotate(${s*6}deg)`;
+
+    if(h>=6 && h<18){
+        scene.className="scenery day";
+        sun.style.display="block";
+        moon.style.display="none";
+    }else{
+        scene.className="scenery night";
+        sun.style.display="none";
+        moon.style.display="block";
+    }
+
+    if(weather) createWeather();
+}
+
+function createWeather(){
+    const p=document.createElement("div");
+    p.className=Math.random()>0.5?"snow":"rain";
+    p.style.left=Math.random()*300+"px";
+    p.style.animationDuration=(Math.random()*3+2)+"s";
+    scene.appendChild(p);
+    setTimeout(()=>p.remove(),5000);
+}
+
+function toggleSound(){
+    sound=!sound;
+    const t=document.getElementById("tick");
+    if(sound) t.play();
+    else t.pause();
+}
+
+function toggleWeather(){
+    weather=!weather;
+    document.querySelectorAll(".snow,.rain").forEach(e=>e.remove());
+}
+
+setInterval(updateClock,1000);
+updateClock();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+
+</body>
+</html>
