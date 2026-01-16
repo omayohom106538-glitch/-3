@@ -1,13 +1,22 @@
 {
-  "background_color": "#393333",
-  "dir": "ltr",
-  "display": "standalone",
-  "name": "\"name\": \"My Cool Clock\"",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "\"name\": \"My Cool Clock\"",
+  "name": "My PWA App",
+  "short_name": "PWA App",
+  "description": "تطبيق ويب يعمل كتطبيق أندرويد باستخدام PWA",
   "start_url": "/",
-  "theme_color": "#cabbbb",
-  "id": "\"name\": \"My Cool Clock\"",
-  "description": "ساعة"
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6efd",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "rrr.jpg",
+      "sizes": "192x192",
+      "type": "image/jpg"
+    },
+    {
+      "src": "rrr.jpg",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+  ]
 }

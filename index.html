@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>Scenery Clock - Fixed</title>
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d6efd">
+
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -241,10 +243,11 @@ setInterval(updateClock,1000);
 updateClock();
 </script>
 <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
 }
 </script>
+
 
 </body>
 </html>
